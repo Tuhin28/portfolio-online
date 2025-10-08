@@ -13,8 +13,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Journey", href: "/education" },
   { label: "Skills", href: "/skills" },
   { label: "Projects", href: "/projects" },
-  { label: "Contact", href: "/contact" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const MEDIUM_URL = "https://medium.com/@tuhin.gim";
@@ -69,9 +69,9 @@ const TopNav = () => {
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
-      animate={{ y: hidden ? -60 : 0, opacity: hidden ? 0.9 : 1 }}
-      transition={{ type: "spring", stiffness: 260, damping: 24 }}
-      className="fixed top-2 left-1/2 -translate-x-1/2 z-50"
+      animate={{ y: hidden ? -80 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30, duration: 0.4 }}
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50"
     >
       <div className="px-2 sm:px-4">
         <motion.div
@@ -82,11 +82,11 @@ const TopNav = () => {
             transformStyle: "preserve-3d",
             rotateX: springX as unknown as number,
             rotateY: springY as unknown as number,
+            width: "min(90vw, 720px)",
           }}
-          className={`mx-auto mt-0 flex items-center gap-3 rounded-2xl border border-border/60 bg-background/80 px-2.5 sm:px-3 py-1.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.35)] backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300 ${
-            isScrolled ? "shadow-xl" : "shadow-md"
+          className={`mx-auto mt-0 flex items-center gap-3 rounded-2xl border border-border/40 bg-background/85 px-3 sm:px-4 py-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-md supports-[backdrop-filter]:bg-background/70 transition-all duration-500 ${
+            isScrolled ? "shadow-[0_8px_40px_rgb(0,0,0,0.16)] bg-background/90" : ""
           }`}
-          style={{ width: "min(92vw, 640px)" }}
         >
           <button
             aria-label="Back"
@@ -106,15 +106,15 @@ const TopNav = () => {
           <Separator orientation="vertical" className="h-7 bg-border/60" />
 
           <div className="flex min-w-0 flex-1 items-center overflow-x-hidden">
-            <ul className="flex flex-wrap justify-center items-center gap-1 sm:gap-2 md:gap-3 pr-2">
+            <ul className="flex flex-wrap justify-center items-center gap-1 sm:gap-2 pr-2">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href} style={{ transform: "translateZ(20px)" }}>
                   <Link
                     to={item.href}
-                    className={`whitespace-nowrap rounded-xl px-3 py-1.5 text-sm transition-all hover:bg-accent hover:text-accent-foreground ${
+                    className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-300 hover:bg-accent/80 hover:text-accent-foreground hover:shadow-sm ${
                       isActive(item.href)
-                        ? "bg-accent text-accent-foreground shadow"
-                        : "text-foreground"
+                        ? "bg-accent text-accent-foreground shadow-md"
+                        : "text-foreground/80 hover:text-foreground"
                     }`}
                   >
                     {item.label}
@@ -130,7 +130,7 @@ const TopNav = () => {
             href={MEDIUM_URL}
             target="_blank"
             rel="noreferrer noopener"
-            className="shrink-0 rounded-xl px-3 py-1.5 text-sm text-foreground/90 hover:text-foreground hover:bg-accent transition-colors"
+            className="shrink-0 rounded-lg px-4 py-1.5 text-sm font-semibold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 shadow-sm hover:shadow-md"
             style={{ transform: "translateZ(20px)" }}
           >
             Medium

@@ -1,172 +1,257 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 
 type GalleryImage = {
   src: string;
   title?: string;
 };
 
-// Support both spellings: /gallary (existing) and /Gallery (user's folder)
-const SOURCES = ["/gallary", "/Gallery"]; // public paths
-
-async function fetchManifest(): Promise<GalleryImage[]> {
-  try {
-    // Try both locations for manifest
-    const resList = await Promise.all(
-      SOURCES.map((base) => fetch(`${base}/manifest.json`, { cache: "no-store" }).catch(() => null))
-    );
-    const res = resList.find((r) => r && (r as Response).ok) as Response | undefined;
-    if (!res.ok) throw new Error("no manifest");
-    const files: (string | GalleryImage)[] = await res.json();
-    const base = SOURCES[resList.indexOf(res as any)] ?? SOURCES[0];
-    return files.map((f) => (typeof f === "string" ? { src: `${base}/${f}` } : { ...f, src: `${base}/${f.src}` }));
-  } catch {
-    // No manifest: list common names from both folders
-    const commonNames = [
-      "gallery 1.webp","gallery 2.webp","gallery 3.webp","gallery 4.webp","gallery 5.webp",
-      "gallery 6.webp","gallery 7.webp","gallery 8.webp","gallery 9.webp","gallery 10.webp"
-    ];
-    const found: GalleryImage[] = [];
-    const checks = await Promise.all(
-      SOURCES.flatMap((base) =>
-        commonNames.map(async (n) => {
-          try {
-            const r = await fetch(`${base}/${n}`, { method: "HEAD" });
-            return r.ok ? { src: `${base}/${n}` } : null;
-          } catch {
-            return null;
-          }
-        })
-      )
-    );
-    checks.forEach((x) => x && found.push(x));
-    return found;
-  }
-}
-
-function sampleUnique<T>(arr: T[], count: number): T[] {
-  const copy = [...arr];
-  const result: T[] = [];
-  const n = Math.min(count, copy.length);
-  for (let i = 0; i < n; i++) {
-    const idx = Math.floor(Math.random() * copy.length);
-    result.push(copy.splice(idx, 1)[0]);
-  }
-  return result;
-}
-
-const INITIAL_VISIBLE = 8;
-
 const Gallery = () => {
   const [allImages, setAllImages] = useState<GalleryImage[]>([]);
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-  const [shuffled, setShuffled] = useState<GalleryImage[]>([]);
-  const timersRef = useRef<number[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [currentRotatingImages, setCurrentRotatingImages] = useState<GalleryImage[]>([]);
+  const rotationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [imageLoadStatus, setImageLoadStatus] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    let mounted = true;
-    fetchManifest().then((imgs) => {
-      if (!mounted) return;
-      setAllImages(imgs);
-      const initial = imgs.length > 0 ? sampleUnique(imgs, Math.min(INITIAL_VISIBLE, imgs.length)) : [];
-      setShuffled(initial);
-    });
-    return () => {
-      mounted = false;
-      timersRef.current.forEach((t) => window.clearTimeout(t));
-      timersRef.current = [];
-    };
+    const galleryImages: GalleryImage[] = [
+      "20240427_185549.jpg",
+      "20240427_202511.jpg",
+      "IMG_0549.jpg",
+      "IMG_0552.jpg",
+      "IMG_0622.JPG",
+      "IMG_1681.JPG",
+      "IMG_1705.jpg",
+      "IMG_1722.jpg",
+      "IMG_1722(1).jpg",
+      "IMG_1835.jpg",
+      "IMG_1908.jpg",
+      "IMG_1981.jpg",
+      "IMG_2013.jpg",
+      "IMG_20190930_175815.jpg",
+      "IMG_20191020_154943.jpg",
+      "IMG_20191020_155304.jpg",
+      "IMG_20191023_115308.jpg",
+      "IMG_20191024_063833.jpg",
+      "IMG_20191026_162447.jpg",
+      "IMG_4466.JPG",
+      "IMG_4934.JPG",
+      "IMG_5969.JPG",
+      "IMG_6293.JPG",
+      "IMG_6442.JPG",
+      "IMG_6594.JPG",
+      "IMG_6772.JPG",
+      "IMG_6873.JPG",
+      "IMG_7380.JPG",
+      "IMG_7734.jpg",
+      "IMG_7774.JPG",
+      "IMG_8089.JPG",
+      "IMG_8536.JPG",
+      "IMG_8555.JPG",
+      "IMG_8593.JPG",
+      "IMG_8744.JPG"
+    ].map((filename) => ({
+      src: `/Gallery/${filename}`,
+      title: filename.replace(/\.[^/.]+$/, "").replace(/_/g, " "),
+    }));
+
+    setAllImages(galleryImages);
+    setCurrentRotatingImages(shuffleArray([...galleryImages]).slice(0, 8));
   }, []);
 
-  // Periodic randomized image rotation with staggered offsets
   useEffect(() => {
-    timersRef.current.forEach((t) => window.clearTimeout(t));
-    timersRef.current = [];
-    if (shuffled.length === 0 || allImages.length === 0) return;
+    if (!isExpanded && allImages.length > 8) {
+      const rotateImages = () => {
+        setCurrentRotatingImages((prev) => {
+          const availableImages = allImages.filter(img => !prev.includes(img));
+          if (availableImages.length === 0) return prev;
 
-    const baseIntervalMs = 10000; // ~10s
-    const maxStaggerMs = 4000; // distribute so not all change at once
+          const randomIndex = Math.floor(Math.random() * prev.length);
+          const randomReplacement = availableImages[Math.floor(Math.random() * availableImages.length)];
 
-    shuffled.forEach((_img, index) => {
-      const offset = Math.floor((index / Math.max(1, shuffled.length - 1)) * maxStaggerMs);
-      const schedule = () => {
-        // choose a new image that's not currently visible to reduce repeats
-        const pool = allImages.filter((g) => !shuffled.includes(g));
-        const replacement = (pool.length > 0 ? pool : allImages)[Math.floor(Math.random() * (pool.length > 0 ? pool.length : allImages.length))];
-        setShuffled((prev) => {
-          const nxt = [...prev];
-          nxt[index] = replacement;
-          return nxt;
+          const newImages = [...prev];
+          newImages[randomIndex] = randomReplacement;
+          return newImages;
         });
-        const id = window.setTimeout(schedule, baseIntervalMs + Math.floor(Math.random() * 1500));
-        timersRef.current.push(id);
       };
-      const id = window.setTimeout(schedule, baseIntervalMs + offset + Math.floor(Math.random() * 500));
-      timersRef.current.push(id);
-    });
 
-    return () => {
-      timersRef.current.forEach((t) => window.clearTimeout(t));
-      timersRef.current = [];
-    };
-  }, [allImages, shuffled.length]);
+      rotationTimerRef.current = setInterval(rotateImages, 3500);
 
-  const visibleImages = useMemo(() => {
-    if (visibleCount <= shuffled.length) return shuffled.slice(0, visibleCount);
-    // if user loads more before rotation fills, pad from allImages
-    const extra = sampleUnique(
-      allImages.filter((g) => !shuffled.includes(g)),
-      Math.max(0, visibleCount - shuffled.length)
-    );
-    return [...shuffled, ...extra];
-  }, [allImages, shuffled, visibleCount]);
+      return () => {
+        if (rotationTimerRef.current) {
+          clearInterval(rotationTimerRef.current);
+        }
+      };
+    }
+  }, [isExpanded, allImages]);
 
-  const canLoadMore = allImages.length > 0 && visibleCount < allImages.length;
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  const handleLoadMore = () => {
+    setIsExpanded(true);
+    if (rotationTimerRef.current) {
+      clearInterval(rotationTimerRef.current);
+    }
+  };
+
+  const displayedImages = isExpanded ? allImages : currentRotatingImages;
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  };
 
   return (
-    <div className="px-4 sm:px-6 md:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/50 to-white px-4 sm:px-6 md:px-8 py-8 md:py-12">
       <div className="mx-auto max-w-7xl">
-        <div className="pt-6 pb-4">
-          <h1 className="text-2xl sm:text-3xl font-semibold">Gallery</h1>
-          <p className="text-muted-foreground mt-1">A living wall of moments I captured.</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8 md:mb-12 text-center"
+        >
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
+            Visual Stories
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
+            Moments captured through the lens — a collection of perspectives and experiences
+          </p>
+        </motion.div>
 
         {allImages.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-            No images found in <code className="font-mono">public/Gallery</code> or <code className="font-mono">public/gallary</code>.
-            Add a manifest with file names, for example: <code className="font-mono">["file1.webp","photo.jpg"]</code>.
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-12 text-center"
+          >
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              No images found. Add images to <code className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">public/Gallery</code>
+            </p>
+          </motion.div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {visibleImages.map((img, idx) => (
-                <motion.div
-                  key={`${img.src}-${idx}`}
-                  layout
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow hover:shadow-lg transition-shadow"
-                >
-                  <img
-                    src={img.src}
-                    alt={img.title ?? `Gallery ${idx + 1}`}
-                    className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </motion.div>
-              ))}
-            </div>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className={`grid gap-4 md:gap-6 ${
+                isExpanded
+                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-2 lg:grid-cols-4"
+              }`}
+            >
+              <AnimatePresence mode="popLayout">
+                {displayedImages.map((img, idx) => (
+                  <motion.div
+                    key={`${img.src}-${idx}`}
+                    variants={itemVariants}
+                    layout
+                    initial="hidden"
+                    animate="visible"
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
+                    className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 ${
+                      isExpanded
+                        ? "aspect-[4/3]"
+                        : idx === 0 || idx === 3
+                        ? "row-span-2 aspect-[3/4]"
+                        : "aspect-[4/3]"
+                    }`}
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative w-full h-full"
+                    >
+                      <img
+                        src={img.src}
+                        alt={img.title ?? `Gallery ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        onLoad={() => {
+                          setImageLoadStatus((prev) => ({ ...prev, [img.src]: true }));
+                        }}
+                        onError={() => {
+                          setImageLoadStatus((prev) => ({ ...prev, [img.src]: false }));
+                        }}
+                      />
+                      {!imageLoadStatus[img.src] && (
+                        <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      {img.title && (
+                        <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                          <p className="text-white text-sm font-medium truncate">{img.title}</p>
+                        </div>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
 
-            {canLoadMore && (
-              <div className="flex justify-center py-8">
-                <button
-                  onClick={() => setVisibleCount(allImages.length)}
-                  className="rounded-full bg-primary text-primary-foreground px-6 py-2.5 shadow hover:shadow-md transition"
+            {!isExpanded && allImages.length > 8 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="flex justify-center mt-8 md:mt-12"
+              >
+                <motion.button
+                  onClick={handleLoadMore}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group inline-flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-700 text-white px-8 py-3.5 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Load more
-                </button>
-              </div>
+                  <span>Load More</span>
+                  <motion.div
+                    animate={{ y: [0, 4, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                  >
+                    <ChevronDown className="w-5 h-5" />
+                  </motion.div>
+                </motion.button>
+              </motion.div>
+            )}
+
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-center mt-8 md:mt-12"
+              >
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  Showing all {allImages.length} images
+                </p>
+              </motion.div>
             )}
           </>
         )}
@@ -176,5 +261,3 @@ const Gallery = () => {
 };
 
 export default Gallery;
-
-

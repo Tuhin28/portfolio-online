@@ -59,19 +59,19 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-8 md:py-12">
+    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white py-8 md:py-12">
       <div className="container mx-auto max-w-6xl px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-8 md:mb-12"
         >
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-yellow-500">
-            Get In Touch
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 bg-clip-text text-transparent">
+            Let's Connect
           </h1>
-          <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Let's connect and explore opportunities to collaborate on data analytics and business intelligence projects
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Open to opportunities in data analytics, business intelligence, and product development
           </p>
         </motion.div>
 
@@ -84,14 +84,14 @@ const Contact = () => {
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              whileHover={{ y: -5 }}
+              transition={{ delay: index * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -8, scale: 1.02 }}
             >
-              <Card className="h-full p-6 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-amber-300 dark:hover:border-amber-700 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30">
+              <Card className="h-full p-6 flex flex-col items-center text-center hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600 bg-white dark:bg-gray-900 rounded-2xl">
                 <motion.div
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900 flex items-center justify-center mb-4 border-2 border-amber-200 dark:border-amber-800 shadow-lg"
+                  whileHover={{ rotate: 360, scale: 1.15 }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 flex items-center justify-center mb-4 border border-amber-200 dark:border-amber-800 shadow-md"
                 >
                   <info.icon className="w-7 h-7 md:w-8 md:h-8 text-amber-600 dark:text-amber-400" />
                 </motion.div>
@@ -105,10 +105,10 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8 md:mb-12"
         >
-          <Card className="p-6 md:p-8 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700">
+          <Card className="p-6 md:p-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Connect on Social Media</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {socialLinks.map((social, index) => (
@@ -117,11 +117,11 @@ const Contact = () => {
                   href={social.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
+                  transition={{ delay: 0.5 + index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  whileTap={{ scale: 0.97 }}
                   className={`${social.color} text-white rounded-xl p-6 flex items-center justify-between transition-all duration-300 shadow-lg hover:shadow-2xl border-2 border-white/20`}
                 >
                   <div className="flex items-center">
@@ -159,9 +159,9 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Card className="p-6 md:p-8 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30 border-2 border-amber-200 dark:border-amber-800">
+          <Card className="p-6 md:p-8 bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-lg">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">Send a Message</h2>
               <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">Let's start a conversation about your next project</p>
@@ -231,7 +231,7 @@ const Contact = () => {
                 type="submit"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 md:py-4 px-6 rounded-lg font-bold hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl text-sm md:text-base flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-gray-900 to-gray-700 text-white py-3 md:py-4 px-6 rounded-full font-bold hover:shadow-2xl transition-all shadow-lg text-sm md:text-base flex items-center justify-center gap-2"
               >
                 <Send className="w-5 h-5" />
                 Send Message

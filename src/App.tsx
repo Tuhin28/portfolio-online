@@ -12,7 +12,8 @@ const Skills = lazy(() => import("./pages/Skills"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Hobbies = lazy(() => import("./pages/Hobbies"));
-import AppSidebar from "./components/AppSidebar";
+const GalleryLazy = lazy(() => import("./pages/Gallery"));
+import TopNav from "./components/TopNav";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +25,7 @@ function App() {
         <Sonner />
         <BrowserRouter>
           <SidebarProvider>
-            <div className="flex min-h-screen w-full">
+            <div className="flex w-full app-viewport">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/portfolio" element={<Navigate to="/about" replace />} />
@@ -32,8 +33,8 @@ function App() {
                   path="/*"
                   element={
                     <>
-                      <AppSidebar />
-                      <main className="flex-1">
+                      <TopNav />
+                      <main className="flex-1 pt-20 app-scroll-area">
                         <Suspense fallback={<div className="p-6 text-sm text-muted-foreground">Loading…</div>}>
                           <Routes>
                             <Route path="/about" element={<About />} />
@@ -41,7 +42,8 @@ function App() {
                             <Route path="/skills" element={<Skills />} />
                             <Route path="/projects" element={<Projects />} />
                             <Route path="/contact" element={<Contact />} />
-                            <Route path="/hobbies" element={<Hobbies />} />
+                            {false && <Route path="/hobbies" element={<Hobbies />} />}
+                            <Route path="/gallery" element={<GalleryLazy />} />
                           </Routes>
                         </Suspense>
                       </main>

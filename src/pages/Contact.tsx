@@ -1,8 +1,25 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Instagram, Send, User, MessageSquare, AtSign } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useState } from "react";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -68,13 +85,18 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
+              whileHover={{ y: -5 }}
             >
-              <Card className="h-full p-6 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-4">
-                  <info.icon className="w-6 h-6 md:w-7 md:h-7 text-yellow-600 dark:text-yellow-400" />
-                </div>
-                <h2 className="text-lg md:text-xl font-bold mb-2">{info.title}</h2>
-                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">{info.content}</p>
+              <Card className="h-full p-6 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-amber-300 dark:hover:border-amber-700 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30">
+                <motion.div
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                  className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900 flex items-center justify-center mb-4 border-2 border-amber-200 dark:border-amber-800 shadow-lg"
+                >
+                  <info.icon className="w-7 h-7 md:w-8 md:h-8 text-amber-600 dark:text-amber-400" />
+                </motion.div>
+                <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-900 dark:text-white">{info.title}</h2>
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 font-medium">{info.content}</p>
               </Card>
             </motion.a>
           ))}
@@ -86,8 +108,8 @@ const Contact = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="mb-8 md:mb-12"
         >
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Connect on Social Media</h2>
+          <Card className="p-6 md:p-8 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-2 border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Connect on Social Media</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {socialLinks.map((social, index) => (
                 <motion.a
@@ -98,18 +120,24 @@ const Contact = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -3 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`${social.color} text-white rounded-lg p-6 flex items-center justify-between transition-all duration-300 shadow-lg`}
+                  className={`${social.color} text-white rounded-xl p-6 flex items-center justify-between transition-all duration-300 shadow-lg hover:shadow-2xl border-2 border-white/20`}
                 >
                   <div className="flex items-center">
-                    <social.icon className="w-8 h-8 md:w-10 md:h-10 mr-4" />
+                    <motion.div
+                      whileHover={{ rotate: 15 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <social.icon className="w-8 h-8 md:w-10 md:h-10 mr-4" />
+                    </motion.div>
                     <div>
                       <h3 className="text-lg md:text-xl font-bold">{social.name}</h3>
-                      <p className="text-sm md:text-base opacity-90">{social.username}</p>
+                      <p className="text-sm md:text-base opacity-90 font-medium">{social.username}</p>
                     </div>
                   </div>
-                  <svg
+                  <motion.svg
+                    whileHover={{ x: 5 }}
                     className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
@@ -121,7 +149,7 @@ const Contact = () => {
                       strokeWidth={2}
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                     />
-                  </svg>
+                  </motion.svg>
                 </motion.a>
               ))}
             </div>
@@ -133,59 +161,79 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Send a Message</h2>
+          <Card className="p-6 md:p-8 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30 border-2 border-amber-200 dark:border-amber-800">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">Send a Message</h2>
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">Let's start a conversation about your next project</p>
+            </div>
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
               className="space-y-4 md:space-y-6"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="flex items-center gap-2 text-sm md:text-base font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <User className="w-4 h-4 text-amber-600" />
                     Name
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 md:py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base"
-                    placeholder="Your name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 md:py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base hover:border-amber-300 dark:hover:border-amber-700"
+                    placeholder="John Doe"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="flex items-center gap-2 text-sm md:text-base font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <AtSign className="w-4 h-4 text-amber-600" />
                     Email
                   </label>
                   <input
                     type="email"
-                    className="w-full px-4 py-2 md:py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base"
-                    placeholder="Your email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 md:py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base hover:border-amber-300 dark:hover:border-amber-700"
+                    placeholder="john@example.com"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="flex items-center gap-2 text-sm md:text-base font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <MessageSquare className="w-4 h-4 text-amber-600" />
                   Subject
                 </label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 md:py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base"
-                  placeholder="Subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 md:py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all text-sm md:text-base hover:border-amber-300 dark:hover:border-amber-700"
+                  placeholder="Project Inquiry"
                 />
               </div>
               <div>
-                <label className="block text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="flex items-center gap-2 text-sm md:text-base font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <Mail className="w-4 h-4 text-amber-600" />
                   Message
                 </label>
                 <textarea
-                  className="w-full px-4 py-2 md:py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-800 dark:text-white h-32 md:h-40 resize-none transition-all text-sm md:text-base"
-                  placeholder="Your message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 md:py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-800 dark:text-white h-32 md:h-40 resize-none transition-all text-sm md:text-base hover:border-amber-300 dark:hover:border-amber-700"
+                  placeholder="Tell me about your project or inquiry..."
                 ></textarea>
               </div>
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-yellow-500 text-white py-3 md:py-4 px-6 rounded-lg font-semibold hover:bg-yellow-600 transition-all shadow-lg text-sm md:text-base"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 md:py-4 px-6 rounded-lg font-bold hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl text-sm md:text-base flex items-center justify-center gap-2"
               >
+                <Send className="w-5 h-5" />
                 Send Message
               </motion.button>
             </form>

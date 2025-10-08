@@ -6,6 +6,7 @@ import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { SplineScene } from "@/components/ui/splite";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Download, ExternalLink, Briefcase, Code, Award } from "lucide-react";
 
 const About = () => {
   const [showAboutDialog, setShowAboutDialog] = useState(false);
@@ -68,37 +69,65 @@ const About = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ scale: 1.05, y: -5 }}
           transition={{ type: "spring", stiffness: 300 }}
-          className="relative overflow-hidden rounded-lg md:col-span-1"
+          className="relative overflow-hidden rounded-xl md:col-span-1 group"
           onClick={() => setShowAboutDialog(true)}
         >
-          <Card className="h-[300px] md:h-[400px] overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60">
-            <img
-              src="/lovable-uploads/IMG_8915.PNG"
-              alt="Tuhin Bhattacharya"
-              className="w-full h-full object-contain object-center transition-transform duration-300 hover:scale-110 cursor-pointer bg-gray-100 dark:bg-gray-800"
-              loading="lazy"
-              decoding="async"
-            />
+          <Card className="h-[300px] md:h-[400px] overflow-hidden rounded-xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-300 dark:hover:border-amber-700 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30 shadow-lg hover:shadow-2xl transition-all duration-300">
+            <div className="relative h-full">
+              <img
+                src="/lovable-uploads/IMG_8915.PNG"
+                alt="Tuhin Bhattacharya"
+                className="w-full h-full object-contain object-center transition-transform duration-500 group-hover:scale-110 cursor-pointer bg-gray-100 dark:bg-gray-800"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex items-center justify-center gap-2 text-white bg-amber-500 px-4 py-2 rounded-full font-bold text-sm">
+                  <ExternalLink className="w-4 h-4" />
+                  View Full Profile
+                </div>
+              </div>
+            </div>
           </Card>
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ scale: 1.02, y: -3 }}
           onClick={() => setShowAboutDialog(true)}
           className="cursor-pointer md:col-span-2"
         >
-          <Card className="h-[300px] md:h-[400px] p-6 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors overflow-auto rounded-xl border border-gray-200/60 dark:border-gray-800/60">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">About Me</h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base leading-relaxed">
+          <Card className="h-[300px] md:h-[400px] p-6 md:p-8 hover:bg-amber-50/50 dark:hover:bg-amber-950/20 transition-all duration-300 overflow-auto rounded-xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-300 dark:hover:border-amber-700 bg-gradient-to-br from-white to-amber-50/30 dark:from-gray-900 dark:to-amber-950/30 shadow-lg hover:shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900">
+                <Briefcase className="w-6 h-6 text-amber-700 dark:text-amber-300" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">About Me</h2>
+            </div>
+
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base leading-relaxed mb-4">
               I'm a Chemical engineer turned data analyst, currently pursuing PGDM in Big Data Analytics at Goa Institute of Management.
               I build business intelligence and analytics solutions that turn messy data into clear, actionable decisions people actually use.
-              <br /><br />
-              At Celebal Technologies, I delivered a 54-page Power BI P&L built with 300+ DAX measures, improving report usability and
-              reducing query load times by ~40%. I combine engineering rigor with product-minded execution to deliver dashboards,
-              KPI frameworks, and performance-tuned reporting.
             </p>
+
+            <div className="border-l-4 border-amber-500 pl-4 py-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-r-lg mb-4">
+              <div className="flex items-start gap-2">
+                <Award className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                <p className="text-gray-700 dark:text-gray-300 text-sm md:text-base font-medium">
+                  At Celebal Technologies, I delivered a 54-page Power BI P&L built with 300+ DAX measures, improving report usability and
+                  reducing query load times by ~40%.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Code className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+              <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base leading-relaxed">
+                I combine engineering rigor with product-minded execution to deliver dashboards, KPI frameworks, and performance-tuned reporting.
+              </p>
+            </div>
           </Card>
         </motion.div>
       </div>

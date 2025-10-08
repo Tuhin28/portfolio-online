@@ -3,6 +3,7 @@ import { Gravity, MatterBody } from "@/components/ui/gravity";
 import { IconCloud } from "@/components/ui/interactive-icon-cloud";
 import { MorphingText } from "@/components/ui/morphing-text";
 import { motion } from "framer-motion";
+import { BarChart3, Star, Zap, TrendingUp, Code, Database } from "lucide-react";
 
 const Skills = () => {
   const skills = [
@@ -42,9 +43,9 @@ const Skills = () => {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "Expert": return "bg-green-500";
-      case "Advanced": return "bg-yellow-500";
-      case "Intermediate": return "bg-blue-500";
+      case "Expert": return "bg-gradient-to-r from-green-500 to-emerald-600";
+      case "Advanced": return "bg-gradient-to-r from-amber-500 to-orange-600";
+      case "Intermediate": return "bg-gradient-to-r from-blue-500 to-cyan-600";
       default: return "bg-gray-500";
     }
   };
@@ -88,32 +89,66 @@ const Skills = () => {
           <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="bg-card rounded-lg p-4 md:p-6 shadow-lg cursor-pointer h-[40vh] flex flex-col justify-between"
+            className="bg-gradient-to-br from-white to-amber-50 dark:from-gray-900 dark:to-amber-950 rounded-lg p-4 md:p-6 shadow-xl cursor-pointer h-[40vh] flex flex-col justify-between border-2 border-amber-100 dark:border-amber-900"
           >
             <div>
-              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-yellow-600 dark:text-yellow-500">Top Skills</h3>
+              <div className="flex items-center gap-2 mb-3 md:mb-4">
+                <BarChart3 className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+                <h3 className="text-lg md:text-xl font-bold text-amber-600 dark:text-amber-500">Core Proficiencies</h3>
+              </div>
               <div className="space-y-3 md:space-y-4">
                 {topSkills.map((skill, index) => (
-                  <div key={index} className="flex justify-between items-center">
-                    <span className="font-medium text-sm">{skill.name}</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${getLevelColor(skill.level)}`}>
-                      {skill.level}
-                    </span>
-                  </div>
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ x: 5 }}
+                    className="group"
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-3 h-3 text-amber-500 group-hover:scale-110 transition-transform" />
+                        <span className="font-semibold text-sm">{skill.name}</span>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${getLevelColor(skill.level)} shadow-sm`}>
+                        {skill.level}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: skill.level === "Expert" ? "95%" : skill.level === "Advanced" ? "80%" : "65%" }}
+                        transition={{ delay: index * 0.1 + 0.3, duration: 0.8 }}
+                        className={`h-full rounded-full ${skill.level === "Expert" ? "bg-green-500" : skill.level === "Advanced" ? "bg-amber-500" : "bg-blue-500"}`}
+                      />
+                    </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <h4 className="text-sm font-semibold mb-2">Additional Expertise</h4>
-              <div className="flex flex-wrap gap-1">
-                {["Data Modeling", "ETL", "KPI Design", "Performance", "Dashboards", "Analytics"].map((expertise, idx) => (
-                  <span
+            <div className="pt-4 border-t-2 border-amber-200 dark:border-amber-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+                <h4 className="text-sm font-bold">Additional Expertise</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { name: "Data Modeling", icon: Database },
+                  { name: "ETL", icon: TrendingUp },
+                  { name: "KPI Design", icon: BarChart3 },
+                  { name: "Performance", icon: Zap },
+                  { name: "Dashboards", icon: BarChart3 },
+                  { name: "Analytics", icon: Code }
+                ].map((expertise, idx) => (
+                  <motion.span
                     key={idx}
-                    className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-xs font-medium"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="px-3 py-1 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900 text-amber-800 dark:text-amber-200 rounded-full text-xs font-semibold border border-amber-200 dark:border-amber-800 cursor-default shadow-sm"
                   >
-                    {expertise}
-                  </span>
+                    {expertise.name}
+                  </motion.span>
                 ))}
               </div>
             </div>

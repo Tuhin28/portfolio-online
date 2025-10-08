@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Briefcase, GraduationCap, Award, Calendar, MapPin, TrendingUp } from "lucide-react";
 
 const Portfolio = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -115,40 +117,66 @@ const Portfolio = () => {
       </section>
 
       {/* Education Section */}
-      <section id="education" className="py-20 bg-gray-50">
+      <section id="education" className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">Education & Experience</h2>
-          <div className="max-w-4xl mx-auto">
-            {/* Timeline items */}
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-200"></div>
-              
-              {/* Education Items */}
-              <TimelineItem
-                year="2025 - 2027"
-                title="PGDM - Big Data Analytics"
-                institution="Goa Institute of Management, Goa"
-                description="Pursuing advanced studies in Big Data Analytics, focusing on business intelligence, data engineering, and analytics product development."
-                side="left"
-              />
-              
-              <TimelineItem
-                year="July 2023 - Dec 2023"
-                title="Business Intelligence Intern"
-                institution="Celebal Technologies"
-                description="Contributed to a 4-member team to devise a 54-page Power BI report with 300+ DAX measures. Enhanced report UI with custom visuals and secured 40% reduction in query loading times."
-                side="right"
-              />
-              
-              <TimelineItem
-                year="2019 - 2023"
-                title="B.E. Chemical Engineering"
-                institution="Jadavpur University"
-                description="Graduated with 8.32 CGPA. Led complex R&D projects including hydrogen production simulation and aqueous retarded acid formulation for ONGC."
-                side="left"
-              />
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+              Education & Experience
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              A journey through continuous learning and professional growth
+            </p>
+          </motion.div>
+
+          <div className="max-w-5xl mx-auto space-y-8">
+            <TimelineItem
+              year="2025 - 2027"
+              title="PGDM - Big Data Analytics"
+              institution="Goa Institute of Management, Goa"
+              description="Pursuing advanced studies in Big Data Analytics, focusing on business intelligence, data engineering, and analytics product development."
+              type="education"
+              status="In Progress"
+              icon={GraduationCap}
+              index={0}
+            />
+
+            <TimelineItem
+              year="July 2023 - Dec 2023"
+              title="Business Intelligence Intern"
+              institution="Celebal Technologies"
+              description="Contributed to a 4-member team to devise a 54-page Power BI report with 300+ DAX measures. Enhanced report UI with custom visuals and secured 40% reduction in query loading times."
+              type="experience"
+              status="Completed"
+              icon={Briefcase}
+              index={1}
+              achievements={[
+                "300+ DAX measures",
+                "40% faster queries",
+                "54-page report"
+              ]}
+            />
+
+            <TimelineItem
+              year="2019 - 2023"
+              title="B.E. Chemical Engineering"
+              institution="Jadavpur University"
+              description="Graduated with 8.32 CGPA. Led complex R&D projects including hydrogen production simulation and aqueous retarded acid formulation for ONGC."
+              type="education"
+              status="Graduated"
+              icon={Award}
+              index={2}
+              achievements={[
+                "8.32 CGPA",
+                "2 ONGC Projects",
+                "Core Committee"
+              ]}
+            />
           </div>
         </div>
       </section>
@@ -157,22 +185,74 @@ const Portfolio = () => {
 };
 
 // Timeline Item Component
-const TimelineItem = ({ year, title, institution, description, side }) => {
+const TimelineItem = ({ year, title, institution, description, type, status, icon: Icon, index, achievements }) => {
+  const typeColors = {
+    education: "from-blue-500 to-cyan-500",
+    experience: "from-amber-500 to-orange-500"
+  };
+
+  const statusColors = {
+    "In Progress": "bg-green-100 text-green-700 border-green-300",
+    "Completed": "bg-blue-100 text-blue-700 border-blue-300",
+    "Graduated": "bg-purple-100 text-purple-700 border-purple-300"
+  };
+
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`flex justify-${side === 'left' ? 'start' : 'end'} w-full mb-16`}
+    <motion.div
+      initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      className="w-full"
     >
-      <div className={`w-5/12 ${side === 'right' && 'ml-auto'}`}>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <span className="text-yellow-500 font-bold">{year}</span>
-          <h3 className="text-xl font-bold mt-2">{title}</h3>
-          <p className="text-gray-600 mt-2">{institution}</p>
-          <p className="text-gray-500 mt-2 text-sm">{description}</p>
+      <Card className="p-6 md:p-8 hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-100">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Icon Section */}
+          <div className="flex-shrink-0">
+            <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${typeColors[type]} flex items-center justify-center shadow-lg`}>
+              <Icon className="w-8 h-8 text-white" />
+            </div>
+          </div>
+
+          {/* Content Section */}
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-3 mb-3">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[status]}`}>
+                {status}
+              </span>
+              <div className="flex items-center text-gray-500 text-sm">
+                <Calendar className="w-4 h-4 mr-1" />
+                {year}
+              </div>
+            </div>
+
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              {title}
+            </h3>
+
+            <div className="flex items-center text-gray-600 mb-4">
+              <MapPin className="w-4 h-4 mr-2" />
+              <p className="font-medium">{institution}</p>
+            </div>
+
+            <p className="text-gray-600 leading-relaxed mb-4">
+              {description}
+            </p>
+
+            {achievements && achievements.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
+                {achievements.map((achievement, idx) => (
+                  <div key={idx} className="flex items-center gap-1 px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-sm font-medium">
+                    <TrendingUp className="w-3 h-3" />
+                    {achievement}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </Card>
     </motion.div>
   );
 };

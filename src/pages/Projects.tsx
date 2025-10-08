@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Award, Clock, Target, Zap, TrendingUp, CheckCircle2 } from "lucide-react";
 
 interface Project {
   id: number;
@@ -117,51 +117,70 @@ const Projects = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
               onClick={() => setSelectedProject(project)}
             >
-              <Card className="overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 h-full">
-                <div className="relative h-48 md:h-56 overflow-hidden">
+              <Card className="overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 h-full border-2 hover:border-amber-200 dark:hover:border-amber-800">
+                <div className="relative h-48 md:h-56 overflow-hidden group">
                   <img
                     src={project.thumbnail}
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs md:text-sm font-semibold">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold shadow-lg">
                     {project.company}
+                  </div>
+                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex items-center gap-2 text-white text-sm font-semibold">
+                      <Award className="w-4 h-4" />
+                      <span>Featured Project</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-4 md:p-6">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs md:text-sm text-yellow-600 dark:text-yellow-500 font-medium mb-3">
-                    {project.duration}
-                  </p>
-                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+                <div className="p-4 md:p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <Clock className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+                    <p className="text-xs md:text-sm text-amber-600 dark:text-amber-500 font-semibold">
+                      {project.duration}
+                    </p>
+                  </div>
+
+                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 line-clamp-3 mb-4 leading-relaxed">
                     {project.shortDescription}
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.technologies.slice(0, 3).map((tech, idx) => (
-                      <span
+                      <motion.span
                         key={idx}
-                        className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-xs font-medium"
+                        whileHover={{ scale: 1.05 }}
+                        className="px-3 py-1 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900 text-amber-800 dark:text-amber-200 rounded-full text-xs font-semibold border border-amber-200 dark:border-amber-800"
                       >
                         {tech}
-                      </span>
+                      </motion.span>
                     ))}
                     {project.technologies.length > 3 && (
-                      <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-xs font-medium">
+                      <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-xs font-semibold border border-gray-200 dark:border-gray-700">
                         +{project.technologies.length - 3} more
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center text-yellow-600 dark:text-yellow-500 text-sm font-semibold">
-                    <span>View Details</span>
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="flex items-center text-amber-600 dark:text-amber-500 text-sm font-bold"
+                  >
+                    <span>View Full Details</span>
                     <ExternalLink className="ml-2 w-4 h-4" />
-                  </div>
+                  </motion.div>
                 </div>
               </Card>
             </motion.div>
@@ -204,36 +223,55 @@ const Projects = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-lg md:text-xl font-semibold mb-3">Key Achievements</h4>
-                    <ul className="space-y-2">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Target className="w-5 h-5 text-amber-600" />
+                      <h4 className="text-lg md:text-xl font-semibold">Key Achievements</h4>
+                    </div>
+                    <ul className="space-y-3">
                       {selectedProject.achievements.map((achievement, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <span className="text-yellow-500 mr-2 mt-1 flex-shrink-0">•</span>
-                          <span className="text-sm md:text-base text-gray-600 dark:text-gray-300">
+                        <motion.li
+                          key={idx}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className="flex items-start group"
+                        >
+                          <CheckCircle2 className="text-green-500 mr-3 mt-0.5 flex-shrink-0 w-5 h-5 group-hover:scale-110 transition-transform" />
+                          <span className="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                             {achievement}
                           </span>
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
                   </div>
 
                   <div>
-                    <h4 className="text-lg md:text-xl font-semibold mb-3">Technologies Used</h4>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Zap className="w-5 h-5 text-amber-600" />
+                      <h4 className="text-lg md:text-xl font-semibold">Technologies Used</h4>
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {selectedProject.technologies.map((tech, idx) => (
-                        <span
+                        <motion.span
                           key={idx}
-                          className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-xs md:text-sm font-medium"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                          whileHover={{ scale: 1.1, y: -2 }}
+                          className="px-4 py-2 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900 dark:to-orange-900 text-amber-800 dark:text-amber-200 rounded-full text-xs md:text-sm font-semibold border border-amber-200 dark:border-amber-800 shadow-sm cursor-default"
                         >
                           {tech}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="border-l-4 border-yellow-500 pl-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded">
-                    <h4 className="text-base md:text-lg font-semibold mb-2">Impact</h4>
-                    <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 italic">
+                  <div className="border-l-4 border-amber-500 pl-4 py-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-r-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <TrendingUp className="w-5 h-5 text-amber-600" />
+                      <h4 className="text-base md:text-lg font-semibold">Business Impact</h4>
+                    </div>
+                    <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 italic leading-relaxed">
                       {selectedProject.impact}
                     </p>
                   </div>

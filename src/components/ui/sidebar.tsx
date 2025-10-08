@@ -47,7 +47,7 @@ export const SidebarBody = ({
   return (
     <motion.div
       className={cn(
-        "h-full px-4 py-4 flex flex-col bg-background border-r border-border",
+        "h-screen sticky top-0 px-4 py-4 flex flex-col bg-background border-r border-border",
         className
       )}
       animate={{

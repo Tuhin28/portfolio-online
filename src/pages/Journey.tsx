@@ -92,13 +92,15 @@ const Journey = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300">
+              <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 rounded-xl border border-gray-200/60 dark:border-gray-800/60 backdrop-blur">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
                   <div className={`relative h-[250px] md:h-[350px] ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
                     <img
                       src={item.image}
                       alt={item.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute top-4 left-4 bg-yellow-500 text-white px-4 py-2 rounded-full font-bold text-sm md:text-base">
                       {item.year}

@@ -15,6 +15,8 @@ const Hobbies = () => {
               className="h-8 cursor-pointer"
               whileHover={{ scale: 1.1 }}
               onClick={() => navigate('/portfolio')}
+              loading="lazy"
+              decoding="async"
             />
             <div className="hidden md:flex space-x-8">
               <a href="#art" className="text-gray-800 hover:text-gray-600 transition-colors">Digital Art</a>
@@ -29,7 +31,9 @@ const Hobbies = () => {
         <div className="container mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-4xl md:text-6xl font-bold text-center mb-12"
           >
             My Creative Journey

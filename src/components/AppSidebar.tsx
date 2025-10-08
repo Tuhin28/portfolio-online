@@ -51,6 +51,8 @@ const AppSidebar = () => {
               alt="Logo"
               className="h-8 w-auto"
               whileHover={{ scale: 1.1 }}
+              loading="lazy"
+              decoding="async"
             />
           </Link>
         )}

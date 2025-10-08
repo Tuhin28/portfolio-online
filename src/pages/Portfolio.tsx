@@ -32,6 +32,8 @@ const Portfolio = () => {
               className="h-8 cursor-pointer"
               whileHover={{ scale: 1.1 }}
               onClick={() => navigate('/hobbies')}
+              loading="lazy"
+              decoding="async"
             />
             <div className="hidden md:flex space-x-8">
               <a href="#about" className="text-gray-800 hover:text-gray-600 transition-colors">About</a>
@@ -49,9 +51,10 @@ const Portfolio = () => {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               className="md:w-1/2"
             >
               <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
@@ -92,15 +95,19 @@ const Portfolio = () => {
               </a>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
               className="md:w-1/2 mt-12 md:mt-0"
             >
               <img
                 src="/lovable-uploads/IMG_8915.PNG"
                 alt="Profile"
                 className="rounded-lg shadow-2xl max-w-md mx-auto object-contain bg-gray-100"
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
               />
             </motion.div>
           </div>

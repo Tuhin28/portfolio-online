@@ -73,11 +73,13 @@ const About = () => {
           className="relative overflow-hidden rounded-lg md:col-span-1"
           onClick={() => setShowAboutDialog(true)}
         >
-          <Card className="h-[300px] md:h-[400px] overflow-hidden">
+          <Card className="h-[300px] md:h-[400px] overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60">
             <img
               src="/lovable-uploads/IMG_8915.PNG"
               alt="Tuhin Bhattacharya"
               className="w-full h-full object-contain object-center transition-transform duration-300 hover:scale-110 cursor-pointer bg-gray-100 dark:bg-gray-800"
+              loading="lazy"
+              decoding="async"
             />
           </Card>
         </motion.div>
@@ -87,7 +89,7 @@ const About = () => {
           onClick={() => setShowAboutDialog(true)}
           className="cursor-pointer md:col-span-2"
         >
-          <Card className="h-[300px] md:h-[400px] p-6 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors overflow-auto">
+          <Card className="h-[300px] md:h-[400px] p-6 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors overflow-auto rounded-xl border border-gray-200/60 dark:border-gray-800/60">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">About Me</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base leading-relaxed">
               I'm a Chemical engineer turned data analyst, currently pursuing PGDM in Big Data Analytics at Goa Institute of Management.
